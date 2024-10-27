@@ -27,12 +27,15 @@ void mkdir(char pathName[]){
     //check if directory already exists:
     struct NODE* currentDir = parent->childPtr;
     while (currentDir != NULL) {
-        if ((strcmp(currentDir->name,baseName) == 0) && (currentDir->fileType == 'D')) {
-            printf("MKDIR ERROR: directory %s already exists\n", currentDir->name);
-            return; //change possibly
+        if (strcmp(currentDir->name, baseName) == 0) {
+            if (currentDir->fileType == 'D') {
+                printf("MKDIR ERROR: directory %s already exists\n", pathName);
+                return;
+            }
         }
         currentDir = currentDir->siblingPtr;
     }
+
 
     struct NODE* newDir = (struct NODE*)malloc(sizeof(struct NODE));
     strncpy(newDir->name, baseName, sizeof(newDir->name) - 1);
