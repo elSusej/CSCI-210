@@ -6,58 +6,65 @@ extern struct NODE* cwd;
 //make directory
 void mkdir(char pathName[]){
 
+    // TO BE IMPLEMENTED
+    //
+    // YOUR CODE TO REPLACE THE PRINTF FUNCTION BELOW
+    
     if (strlen(pathName) == 0 || strcmp(pathName, "/") == 0) {
         printf("MKDIR ERROR: no path provided\n");
         return;
     }
 
-    char baseName[64];
-    char dirName[256];
-    char pathCopy[256];
-
-    strncpy(pathCopy,pathName, sizeof(pathCopy) -1);
-    pathCopy[sizeof(pathCopy) - 1] = '\0';
-
-    struct NODE* parent = splitPath(pathCopy, baseName, dirName);
+    char baseName[64]; // Since we can't make string variables.
+    char dirName[256]; 
     
-    if (parent == NULL) {
+    char pathCopy[256];
+    strncpy(pathCopy, pathName, sizeof(pathCopy) - 1);
+    pathCopy[sizeof(pathCopy) - 1] = '\0';
+    
+    struct NODE* parentDir = splitPath(pathCopy, baseName, dirName);
+
+    // I kept on getting a segfault when the parent directory did not exist without this, which makes sense since we can't make a folder in a non-existent directory.
+    if (parentDir == NULL) {
         return;
     }
 
-    //check if directory already exists:
-    struct NODE* currentDir = parent->childPtr;
-    while (currentDir != NULL) {
-        if (strcmp(currentDir->name, baseName) == 0) {
-            if (currentDir->fileType == 'D') {
+    // Check if directory already exists in parent
+    struct NODE* current = parentDir->childPtr;
+    while (current != NULL) {
+        if (strcmp(current->name, baseName) == 0) {
+            if (current->fileType == 'D') {
                 printf("MKDIR ERROR: directory %s already exists\n", pathName);
                 return;
             }
         }
-        currentDir = currentDir->siblingPtr;
+        current = current->siblingPtr;
     }
 
-
+    // Create new directory node.
     struct NODE* newDir = (struct NODE*)malloc(sizeof(struct NODE));
     strncpy(newDir->name, baseName, sizeof(newDir->name) - 1);
     newDir->name[sizeof(newDir->name) - 1] = '\0';
     newDir->fileType = 'D';
     newDir->childPtr = NULL;
     newDir->siblingPtr = NULL;
-    newDir->parentPtr = parent;
+    newDir->parentPtr = parentDir;
 
-    if (parent->childPtr == NULL) {
-        parent->childPtr = newDir;
-    }
-    else {
-        currentDir = parent->childPtr;
-        while (currentDir->siblingPtr != NULL) {
-            currentDir = currentDir->siblingPtr;
+    // If parent has no children, make this the first child
+    if (parentDir->childPtr == NULL) {
+        parentDir->childPtr = newDir;
+    } else {
+        // Otherwise, add as last sibling
+        current = parentDir->childPtr;
+        while (current->siblingPtr != NULL) {
+            current = current->siblingPtr;
         }
-        currentDir->siblingPtr = newDir;
+        current->siblingPtr = newDir;
     }
 
-    printf("MKDIR SUCCESS: node %s successfully created\n", newDir->name);
+    printf("MKDIR SUCCESS: node %s successfully created\n", pathName);
 }
+
 
 //handles tokenizing and absolute/relative pathing options
 
