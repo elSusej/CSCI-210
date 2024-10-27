@@ -29,9 +29,8 @@ void mkdir(char pathName[]){
     while (currentDir != NULL) {
         if ((strcmp(currentDir->name,baseName) == 0) && (currentDir->fileType == 'D')) {
             printf("MKDIR ERROR: directory %s already exists\n", currentDir->name);
-            return;
+            return; //change possibly
         }
-
         currentDir = currentDir->siblingPtr;
     }
 
@@ -55,7 +54,6 @@ void mkdir(char pathName[]){
     }
 
     printf("MKDIR SUCCESS: node %s successfully created\n", newDir->name);
-    return; //
 }
 
 //handles tokenizing and absolute/relative pathing options
