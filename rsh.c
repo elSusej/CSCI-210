@@ -33,6 +33,10 @@ int main() {
     char linecpy[256];
     char* argv[20];
     char* token;
+	pid_t pid;
+    int status;
+    posix_spawnattr_t attr;
+	posix_spawnattr_init(&attr);
 
     while (1) {
 
@@ -63,10 +67,26 @@ int main() {
     // Add code to spawn processes for the first 9 commands
     // And add code to execute cd, exit, help command
     
-    /*if (strcmp(argv[0],"cp") == 0) {
-        
-    }
     if (strcmp(argv[0],"cp") == 0) {
+        if (posix_spawnp(&pid, "echo", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Wait for the spawned process to terminate
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (WIFEXITED(status)) {
+        printf("Spawned process exited with status %d\n", WEXITSTATUS(status));
+    }
+
+    // Destroy spawn attributes
+    posix_spawnattr_destroy(&attr);
+    }
+    /*if (strcmp(argv[0],"cp") == 0) {
         
     }
     if (strcmp(argv[0],"cp") == 0) {
@@ -101,8 +121,8 @@ int main() {
     }
     if (strcmp(argv[0],"help") == 0) {
         printf("The allowed commands are:\n");
-        for (int i = 0; i < 12; i++) {
-            printf("%s\n", allowed[i]);
+        for (int i = 1; i <= 12; i++) {
+            printf("%d: %s\n", i, allowed[i-1]);
         }
     }
     // Use the example provided in myspawn.c
