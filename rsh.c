@@ -68,46 +68,134 @@ int main() {
     // And add code to execute cd, exit, help command
     
     if (strcmp(argv[0],"cp") == 0) {
-        if (posix_spawnp(&pid, "echo", NULL, &attr, argv, environ) != 0) {
+        if (posix_spawnp(&pid, "cp", NULL, &attr, argv, environ) != 0) {
+            perror("spawn failed");
+            exit(EXIT_FAILURE);
+        }
+
+        // Wait for the spawned process to terminate
+        if (waitpid(pid, &status, 0) == -1) {
+            perror("waitpid failed");
+            exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status)) {
+            printf("Spawned process exited with status %d\n", WEXITSTATUS(status));
+        }
+
+        // Destroy spawn attributes
+        posix_spawnattr_destroy(&attr);
+    }
+    if (strcmp(argv[0],"touch") == 0) {
+        if (posix_spawnp(&pid, "touch", NULL, &attr, argv, environ) != 0) {
         perror("spawn failed");
         exit(EXIT_FAILURE);
     }
 
-    // Wait for the spawned process to terminate
     if (waitpid(pid, &status, 0) == -1) {
         perror("waitpid failed");
         exit(EXIT_FAILURE);
     }
 
-    if (WIFEXITED(status)) {
-        printf("Spawned process exited with status %d\n", WEXITSTATUS(status));
+    posix_spawnattr_destroy(&attr);
+        
+    }
+    if (strcmp(argv[0],"mkdir") == 0) {
+        if (posix_spawnp(&pid, "mkdir", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
     }
 
-    // Destroy spawn attributes
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+    }
+
     posix_spawnattr_destroy(&attr);
     }
-    /*if (strcmp(argv[0],"cp") == 0) {
+
+    if (strcmp(argv[0],"ls") == 0) {
+        if (posix_spawnp(&pid, "ls", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+    }
+
+    posix_spawnattr_destroy(&attr);
+    }
+
+    if (strcmp(argv[0],"pwd") == 0) {
+        if (posix_spawnp(&pid, "pwd", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+    }
+
+    posix_spawnattr_destroy(&attr);
+    }
+    if (strcmp(argv[0],"cat") == 0) {
+        if (posix_spawnp(&pid, "cat", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+    }
+
+    posix_spawnattr_destroy(&attr);
+    }
+    if (strcmp(argv[0],"grep") == 0) {
+        if (posix_spawnp(&pid, "grep", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+    }
+
+    posix_spawnattr_destroy(&attr);
         
     }
-    if (strcmp(argv[0],"cp") == 0) {
+    if (strcmp(argv[0],"chmod") == 0) {
+        if (posix_spawnp(&pid, "chmod", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
+    }
+
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+    }
+
+    posix_spawnattr_destroy(&attr);
         
     }
-    if (strcmp(argv[0],"cp") == 0) {
-        
+    if (strcmp(argv[0],"diff") == 0) {
+        if (posix_spawnp(&pid, "diff", NULL, &attr, argv, environ) != 0) {
+        perror("spawn failed");
+        exit(EXIT_FAILURE);
     }
-    if (strcmp(argv[0],"cp") == 0) {
-        
+
+    if (waitpid(pid, &status, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
     }
-    if (strcmp(argv[0],"cp") == 0) {
-        
+
+    posix_spawnattr_destroy(&attr);
     }
-    if (strcmp(argv[0],"cp") == 0) {
-        
-    }
-    if (strcmp(argv[0],"cp") == 0) {
-        
-    }
-    */
+    
     if (strcmp(argv[0],"cd") == 0) {
         if ((argv[1] != NULL) && (argv[2] != NULL)) {
             printf("-rsh: cd: too many arguments");
